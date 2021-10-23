@@ -1,9 +1,7 @@
 <script>
-  import ProductPage from "./pages/products.svelte";
-  import Xss from './xss/xss.svelte'
+  import MainPage from "./pages/main-page.svelte";
 </script>
 
 <main>
-  <ProductPage />
-  <Xss />
+  <MainPage />
 </main>
