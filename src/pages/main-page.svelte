@@ -9,8 +9,12 @@
   <div class="layout">
     <CreateProduct />
     <div class="sub-layout">
-      <ProductList />
-      <CartList />
+      <div class="div">
+        <ProductList />
+      </div>
+      <div class="div">
+        <CartList />
+      </div>
     </div>
   </div>
 </main>
@@ -25,7 +29,11 @@
 
   .sub-layout {
     display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
+    /* justify-content: space-around;
+    align-items: flex-start; */
+  }
+  .div {
+    flex: 1;
+    margin: 3px;
   }
 </style>
