@@ -1,57 +1,71 @@
 <script>
-  import Feedback from "./pages/feedback.svelte";
-</script>
+  import { beforeUpdate, onMount } from "svelte";
+  let value = "";
+  let items = [];
 
-<main>
-  <Feedback />
-</main>
-<!-- <script>
-  import { each } from "svelte/internal";
-
-  export let name;
-  let arr = [
-    {
-      id: "1",
-      name: "thilina",
-    },
-    {
-      id: "2",
-      name: "dilshan",
-    },
-    {
-      id: "3",
-      name: "heiya",
-    },
-  ];
-
-  $: btnName = "Click Me";
-
-  const toggleName = () => {
-    if (btnName === "Click Me") {
-      btnName = "Hello world";
-    } else {
-      btnName = "Click Me";
+  const getDatas = async () => {
+    const getData = await fetch(
+      "https://shop-446d1-default-rtdb.firebaseio.com/items.json"
+    );
+    const res = await getData.json();
+    for (const key in res) {
+      if (Object.hasOwnProperty.call(res, key)) {
+        const element = res[key];
+        items = [...items, { id: key, value: element }];
+      }
     }
   };
 
-  const onAddUser = ()=>{
-	  arr = [...arr, {id:'4', name:'hdhd'}]
-  }
+  onMount(() => {
+    getDatas();
+  });
+
+  const addItemHandler = async () => {
+    const data = JSON.stringify(value);
+    const item = await fetch(
+      "https://shop-446d1-default-rtdb.firebaseio.com/items.json",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      }
+    );
+
+    const res = await item.json();
+    for (const key in res) {
+      if (Object.hasOwnProperty.call(res, key)) {
+        const id = res[key];
+        items = [...items, { id, value }];
+      }
+    }
+    value = "";
+  };
+
+  const deleteItemHandler = async (id) => {
+    items = items.filter((data) => data.id !== id);
+    console.log(items);
+    const item = await fetch(
+      `https://shop-446d1-default-rtdb.firebaseio.com/items/${id}.json`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  };
 </script>
 
 <main>
-  <h1>Hello {name}!</h1>
-  <button on:click={toggleName}> {btnName} </button>
-  {#if btnName === "Click Me"}
-    <p>This shows conditionally</p>
-  {/if}
+  <h2>Http Component</h2>
+  <input bind:value />
+  <button on:click={addItemHandler}> Add Item </button>
 
-  {#each arr as ar (ar.id)}
-    <p>{ar.name}</p>
+  <h2>Data List</h2>
+  {#each items as item (item.id)}
+    <p>{item.value}</p>
+    <span on:click={() => deleteItemHandler(item.id)}> x </span>
   {/each}
-
-  <button on:click={onAddUser}> Add Users </button>
 </main>
-
-<style>
-</style> -->
